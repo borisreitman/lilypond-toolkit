@@ -1,0 +1,5 @@
+# Audio → MIDI → LilyPond (see scripts/wav-to-ly.sh)
+piano_transcription_inference==0.0.6
+torch>=2.0
+librosa>=0.10
+mido>=1.3
