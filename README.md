@@ -12,6 +12,7 @@ it from any project's root.
 ```
 scripts/                             compile, play, export, and transcription scripts
 includes/                            .ly snippets meant to be \include'd from score files
+score/hello.ly                       minimal sample score, for trying commands out
 doc/lilypond-toolkit.sample.sh       template entrypoint for a score project to copy in
 doc/.env.example                     template config for that entrypoint
 doc/lilypond-toolkit-completion.bash bash tab-completion for the entrypoint's subcommands
@@ -71,6 +72,33 @@ lilypond-toolkit compile hello.ly
 lilypond-toolkit play score/waltz.ly --from-bar 21 --to-bar 24
 lilypond-toolkit --help                # full command list
 ```
+
+No score file handy to try it on? Copy the sample along:
+
+```bash
+cp ~/Documents/my-music-scores/lilypond-toolkit/score/hello.ly .
+lilypond-toolkit compile hello.ly
+lilypond-toolkit play hello.ly
+```
+
+### Commands
+
+| Command | Does |
+|---|---|
+| `compile <score.ly...>` | Compile to PDF (and MIDI if `\midi{}` present) |
+| `play <score.ly...>` | Compile and play with Muse Keys |
+| `play-midi <file.mid\|.midi>` | Play a MIDI file with Muse Keys |
+| `mp3 <score.ly>` | Render an MP3 (no playback) |
+| `musescore <score.ly...>` | Compile and open in MuseScore |
+| `wav-to-ly <recording.wav...>` | Transcribe audio to a draft `.ly` |
+| `wav-to-midi <recording.wav...>` | Transcribe audio to MIDI only |
+| `midi-to-ly <file.mid...>` | Convert MIDI to a draft `.ly` |
+| `remove-hum <recording.wav>` | Strip background hum from audio |
+| `simplify-musicxml <in> <out>` | Simplify a MusicXML transcription |
+| `trim-midi <in.mid> <out.mid>` | Trim a MIDI file to a bar range |
+
+Run `lilypond-toolkit <command> --help` for a command's own options. See
+**Scripts** below for full examples of each.
 
 No symlinks or per-project venv needed. `.ly` files can `\include` snippets
 from `includes/` by bare filename — `compile`, `play`, `mp3`, and
