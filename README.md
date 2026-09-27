@@ -31,6 +31,21 @@ chmod +x ~/bin/lilypond-toolkit
 don't use `~/bin`.) This is the only thing every project shares — one copy
 of the entrypoint, forwarding to this repo's `scripts/` and `.venv/`.
 
+Want a shorter name to type (e.g. `lptk`)? Install it under that name
+instead, and point the bash completion (see below) at the same name:
+
+```bash
+cp doc/lilypond-toolkit.sample.sh ~/bin/lptk
+chmod +x ~/bin/lptk
+```
+
+The script doesn't hardcode its own name anywhere (its `--help` text uses
+`$0`), so this is a rename, not a fork — just remember to use `lptk`
+instead of `lilypond-toolkit` in the rest of this README, and, if you also
+install the completion script, change both the function name
+(`_lilypond_toolkit`) and the `complete ... lilypond-toolkit` line at its
+end to match.
+
 **Once per score project** — only if that project needs something other
 than the entrypoint's built-in default (`TOOLKIT_HOME` at
 `~/Documents/my-music-scores/lilypond-toolkit`, and MuseScore/Muse Keys at
