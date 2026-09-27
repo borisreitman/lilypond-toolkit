@@ -15,7 +15,7 @@ _lilypond_toolkit() {
 
   if [[ $COMP_CWORD -eq 1 ]]; then
     cur="${COMP_WORDS[COMP_CWORD]}"
-    local commands="compile play play-midi mp3 musescore wav-to-ly wav-to-midi midi-to-ly remove-hum simplify-musicxml trim-midi"
+    local commands="compile play play-midi mp3 musescore wav-to-ly wav-to-midi midi-to-ly trim-midi"
     COMPREPLY=( $(compgen -W "$commands" -- "$cur") )
   fi
 }

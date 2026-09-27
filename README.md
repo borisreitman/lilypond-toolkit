@@ -21,8 +21,6 @@ any project's root.
 | `wav-to-ly <recording.wav...>` | Transcribe audio to a draft `.ly` |
 | `wav-to-midi <recording.wav...>` | Transcribe audio to MIDI only |
 | `midi-to-ly <file.mid...>` | Convert MIDI to a draft `.ly` |
-| `remove-hum <recording.wav>` | Strip background hum from audio |
-| `simplify-musicxml <in> <out>` | Simplify a MusicXML transcription |
 | `trim-midi <in.mid> <out.mid>` | Trim a MIDI file to a bar range |
 
 Run `lilypond-toolkit <command> --help` for a command's own options. Full
@@ -309,18 +307,6 @@ extra flags, so call the converter directly):
 ```bash
 TOOLKIT_HOME=~/Documents/my-music-scores/lilypond-toolkit
 "$TOOLKIT_HOME/.venv/bin/python" "$TOOLKIT_HOME/scripts/midi_to_ly.py" tune.mid --split 64 --quant 8
-```
-
-### Remove background hum from audio
-
-```bash
-lilypond-toolkit remove-hum noisy.wav   # → noisy.cleaned.wav
-```
-
-### Simplify MusicXML
-
-```bash
-lilypond-toolkit simplify-musicxml input.musicxml output.musicxml
 ```
 
 ## Includes

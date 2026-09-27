@@ -51,8 +51,6 @@ Commands:
   wav-to-ly <recording.wav...>    Transcribe audio to a draft .ly
   wav-to-midi <recording.wav...>  Transcribe audio to MIDI only
   midi-to-ly <file.mid...>        Convert MIDI to a draft .ly
-  remove-hum <recording.wav>      Strip background hum from audio
-  simplify-musicxml <in> <out>    Simplify a MusicXML transcription
   trim-midi <in.mid> <out.mid>    Trim a MIDI file to a bar range
 
 Run "$0 <command> --help" for a command's own options.
@@ -82,8 +80,6 @@ case "$cmd" in
   wav-to-ly)           exec "${SCRIPTS}/wav-to-ly.sh" "$@" ;;
   wav-to-midi)         exec "${SCRIPTS}/wav-to-midi.sh" "$@" ;;
   midi-to-ly)          exec "${SCRIPTS}/midi-to-ly.sh" "$@" ;;
-  remove-hum)          exec "${SCRIPTS}/remove-hum.sh" "$@" ;;
-  simplify-musicxml)   exec python3 "${SCRIPTS}/simplify_musicxml.py" "$@" ;;
   trim-midi)           exec "${PYTHON}" "${SCRIPTS}/trim_midi_bars.py" "$@" ;;
   -h | --help)         usage; exit 0 ;;
   *)
