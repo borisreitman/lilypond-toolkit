@@ -124,10 +124,12 @@ def trim_track(
             delta = end_tick - start_tick - kept_abs if index == 0 else 0
             out.append(mido.Message("note_off", channel=channel, note=note, velocity=0, time=delta))
 
-    if not out:
+    if not out and not pending_meta_before_start:
         return out
 
-    # Preserve tempo/meter at the start of the trimmed region.
+    # Preserve tempo/meter at the start of the trimmed region, even if this
+    # track otherwise has no events in range (e.g. a tempo-only meta track
+    # when trimming to a range that doesn't include any other meta changes).
     if pending_meta_before_start:
         rebuilt = mido.MidiTrack()
         for meta in pending_meta_before_start:
