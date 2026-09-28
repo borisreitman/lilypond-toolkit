@@ -45,13 +45,7 @@ Usage: $0 <command> [args...]
 Commands:
   compile <score.ly...>          Compile to PDF (and MIDI if \\midi{} present)
   play <score.ly...>              Compile and play with Muse Keys
-  play-midi <file.mid|.midi>      Play a MIDI file with Muse Keys
   mp3 <score.ly>                  Render an MP3 (no playback)
-  musescore <score.ly...>         Compile and open in MuseScore
-  wav-to-ly <recording.wav...>    Transcribe audio to a draft .ly
-  wav-to-midi <recording.wav...>  Transcribe audio to MIDI only
-  midi-to-ly <file.mid...>        Convert MIDI to a draft .ly
-  trim-midi <in.mid> <out.mid>    Trim a MIDI file to a bar range
 
 Run "$0 <command> --help" for a command's own options.
 EOF
@@ -76,10 +70,6 @@ case "$cmd" in
   play)                exec "${SCRIPTS}/play-ly.sh" "$@" ;;
   play-midi)           exec "${SCRIPTS}/play-midi.sh" "$@" ;;
   mp3)                 exec "${SCRIPTS}/ly-to-mp3.sh" "$@" ;;
-  musescore)           exec "${SCRIPTS}/to-musescore.sh" "$@" ;;
-  wav-to-ly)           exec "${SCRIPTS}/wav-to-ly.sh" "$@" ;;
-  wav-to-midi)         exec "${SCRIPTS}/wav-to-midi.sh" "$@" ;;
-  midi-to-ly)          exec "${SCRIPTS}/midi-to-ly.sh" "$@" ;;
   trim-midi)           exec "${PYTHON}" "${SCRIPTS}/trim_midi_bars.py" "$@" ;;
   -h | --help)         usage; exit 0 ;;
   *)

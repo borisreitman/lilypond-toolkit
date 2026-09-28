@@ -17,11 +17,7 @@ any project's root.
 | `play <score.ly...>` | Compile and play with Muse Keys |
 | `play-midi <file.mid\|.midi>` | Play a MIDI file with Muse Keys |
 | `mp3 <score.ly>` | Render an MP3 (no playback) |
-| `musescore <score.ly...>` | Compile and open in MuseScore |
-| `wav-to-ly <recording.wav...>` | Transcribe audio to a draft `.ly` |
-| `wav-to-midi <recording.wav...>` | Transcribe audio to MIDI only |
-| `midi-to-ly <file.mid...>` | Convert MIDI to a draft `.ly` |
-| `trim-midi <in.mid> <out.mid>` | Trim a MIDI file to a bar range |
+| `trim-midi <in.mid> <out.mid>` | Trim a MIDI file to a bar range (internal) |
 
 Run `lilypond-toolkit <command> --help` for a command's own options. Full
 examples of each are under **Command reference** below, once set up.
@@ -55,8 +51,7 @@ MacTeX is **not** required for standalone `.ly` files.
 
 #### Muse Keys (for playback and MP3 export)
 
-Needed by the `play`, `play-midi`, and `mp3` commands. Skip this if you
-only need `compile`.
+Needed by the `play` and `mp3` commands. Skip this if you only need `compile`.
 
 1. Install **MuseScore 4 Studio** — not the free MuseScore 3, which can't
    use Muse Sounds:
@@ -67,8 +62,7 @@ only need `compile`.
 
    (or download from [musescore.org](https://musescore.org)).
 
-2. Install **Muse Hub** from [musehub.com](https://www.musehub.com/) and
-   open it.
+2. Install **Muse Hub** from [musehub.com](https://www.musehub.com/) and open it.
 
 3. In Muse Hub, find **Muse Keys** under its sound packs and download it
    (a Grand Piano / Harpsichord instrument pack used for playback).
@@ -86,7 +80,7 @@ only need `compile`.
    Override the path per-project via `.env` (`MSCORE`, `MUSESCORE_APP`,
    `MUSE_KEYS_DIR`) — see **Install** below.
 
-#### Other optional tools
+#### FFMEG for playback
 
 ```bash
 brew install python@3.12 ffmpeg     # audio → MIDI transcription (ByteDance)
@@ -94,7 +88,7 @@ brew install python@3.12 ffmpeg     # audio → MIDI transcription (ByteDance)
 
 ### Install
 
-**1. Once per machine** — install the entrypoint globally:
+#### Once per machine** — install the entrypoint globally
 
 ```bash
 cp doc/lilypond-toolkit.sample.sh ~/bin/lilypond-toolkit
@@ -119,7 +113,9 @@ this README, and, if you also install the completion script below, change
 both its function name (`_lilypond_toolkit`) and its `complete ...
 lilypond-toolkit` line to match.
 
-**2. Once per score project** — only needed if that project requires
+#### Once per score project 
+
+Only needed if that project requires
 something other than the entrypoint's built-in default (`TOOLKIT_HOME` at
 `~/Documents/my-music-scores/lilypond-toolkit`, and MuseScore/Muse Keys at
 their standard install paths). Copy the template and edit what differs:
@@ -137,7 +133,9 @@ different toolkit checkouts if needed. Keep `.env` out of git (it's
 machine-specific); anything you leave out of it falls back to the
 entrypoint's or the toolkit scripts' own defaults.
 
-**3. Optional — bash tab-completion** for the subcommand name only
+#### Optional — bash tab-completion
+
+For the subcommand name only
 (`compile`, `play`, `mp3`, ...). Filename arguments after that fall through
 to bash's normal filename completion instead of a hand-rolled one, so
 directories, spaces, and quoting all behave exactly like they do
@@ -172,8 +170,6 @@ lilypond-toolkit compile hello.ly
 lilypond-toolkit play hello.ly
 ```
 
-No symlinks or per-project venv needed.
-
 ## Command reference
 
 ### Compile
@@ -187,14 +183,7 @@ lilypond -o my-output hello.ly                 # custom output basename
 
 ### Play MIDI (Muse Keys)
 
-Play a `.mid`/`.midi` file using **MuseScore Studio** and the MuseSounds
-profile (Grand Piano from Muse Keys):
-
-```bash
-lilypond-toolkit play-midi hello.midi
-lilypond-toolkit play-midi -o playback/hello-muse.wav hello.midi   # save wav
-lilypond-toolkit play-midi --keep piece.mid                        # save next to .mid
-```
+Play using **MuseScore Studio** and the MuseSounds profile (Grand Piano from Muse Keys):
 
 From a `.ly` file (compile, then play with Muse Keys):
 
@@ -219,14 +208,6 @@ yours are installed elsewhere.
 Rendering uses MuseScore's **MuseSounds** profile — the scripts do not
 point at individual `.sf2` files:
 
-```bash
-mscore -o output.wav --sound-profile MuseSounds input.mid
-```
-
-For interactive playback in the app (no WAV render step), open a MIDI file
-in MuseScore and press **Space**. Set **Home → Playback setup → Sound
-profile** to **MuseSounds**.
-
 ### Export MP3
 
 Compile, render with Muse Keys, encode with ffmpeg — no playback:
@@ -240,79 +221,11 @@ The output name is `<name-prefix><title>-<YYYY-MM-DD-HHMM>.mp3`, with the
 title taken from the score's `\header`. See `scripts/ly-to-mp3.sh` for the
 prefix.
 
-### Export MIDI and open in MuseScore
-
-```bash
-lilypond hello.ly
-open -a "MuseScore 4" hello.midi
-```
-
-Or use the helper command (compile + open in one step):
-
-```bash
-lilypond-toolkit musescore hello.ly
-lilypond-toolkit musescore score1.ly score2.ly
-```
-
-In MuseScore: **Space** to play, **File → Save As** to save as `.mscz`.
-
-### Transcribe audio to LilyPond (ByteDance)
-
-Turn a piano recording (`.wav`, `.mp3`, etc.) into a **draft** `.ly` file:
-
-```
-recording.wav  →  MIDI (ByteDance)  →  .ly (midi_to_ly.py)  →  lilypond  →  PDF
-```
-
-Best for **solo piano**, clean recordings, steady tempo. Expect to edit the
-`.ly` file — rhythms, key, and hand split are approximate.
-
-Install the Python dependencies once, in this repo (the venv is shared by
-every score project):
-
-```bash
-cd ~/Documents/my-music-scores/lilypond-toolkit
-python3.12 -m venv .venv
-.venv/bin/pip install -r requirements.txt
-```
-
-The ByteDance model checkpoint (~165 MB) downloads on first run to
-`~/piano_transcription_inference_data/`.
-
-Audio → LilyPond in one step:
-
-```bash
-lilypond-toolkit wav-to-ly my-piano-take.wav
-lilypond my-piano-take.ly && open my-piano-take.pdf
-```
-
-Or step by step:
-
-```bash
-lilypond-toolkit wav-to-midi my-piano-take.wav     # → my-piano-take.mid
-lilypond-toolkit midi-to-ly my-piano-take.mid      # → my-piano-take.ly
-lilypond my-piano-take.ly && open my-piano-take.pdf
-lilypond-toolkit play-midi my-piano-take.mid       # listen with Muse Keys
-```
-
-Convert an existing MIDI file (skip transcription):
-
-```bash
-lilypond-toolkit midi-to-ly some-tune.mid
-```
-
-Tune hand split or quantization (the `midi-to-ly` command doesn't forward
-extra flags, so call the converter directly):
-
-```bash
-TOOLKIT_HOME=~/Documents/my-music-scores/lilypond-toolkit
-"$TOOLKIT_HOME/.venv/bin/python" "$TOOLKIT_HOME/scripts/midi_to_ly.py" tune.mid --split 64 --quant 8
-```
 
 ## Includes
 
 `.ly` snippets in `includes/` are meant to be `\include`'d from a score
-file by bare filename — `compile`, `play`, `mp3`, and `musescore` all pass
+file by bare filename — `compile`, `play`, `mp3` all pass
 `-I "$TOOLKIT_HOME/includes"` to `lilypond`, e.g. from `score/waltz.ly`:
 
 ```
