@@ -104,6 +104,7 @@ trim_midi_by_bars() {
   printf '%s\n' "$TRIMMED_MIDI"
 }
 
+POSITIONAL=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -o | --output)
@@ -152,6 +153,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     --)
       shift
+      POSITIONAL+=("$@")
       break
       ;;
     -*)
@@ -160,10 +162,16 @@ while [[ $# -gt 0 ]]; do
       exit 1
       ;;
     *)
-      break
+      POSITIONAL+=("$1")
+      shift
       ;;
   esac
 done
+if [[ ${#POSITIONAL[@]} -gt 0 ]]; then
+  set -- "${POSITIONAL[@]}"
+else
+  set --
+fi
 
 if [[ $# -lt 1 ]]; then
   usage
